@@ -3,8 +3,10 @@ using System.CommandLine;
 using System.CommandLine.Hosting;
 using System.CommandLine.Parsing;
 
+using Template.CommandTool.Commands;
+
 var rootCommand = new RootCommand("Command");
-// TODO
+rootCommand.Setup();
 
 var builder = new CommandLineBuilder(rootCommand)
     .UseDefaults()
@@ -15,7 +17,7 @@ var builder = new CommandLineBuilder(rootCommand)
             // TODO
         });
 
-        // TODO
+        host.UseCommandHandlers();
     });
 
 return await builder.Build().InvokeAsync(args);
