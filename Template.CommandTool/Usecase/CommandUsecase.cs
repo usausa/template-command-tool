@@ -27,8 +27,8 @@ public sealed class CommandUsecase
         using var rsa = RSA.Create();
         rsa.ImportFromEncryptedPem(await File.ReadAllTextAsync(key), password);
 
-        var challenge = Convert.FromHexString(Encoding.ASCII.GetString(data));
-        var signData = rsa.SignData(challenge, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
+        var token = Convert.FromHexString(Encoding.ASCII.GetString(data));
+        var signData = rsa.SignData(token, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
         var signature = Encoding.ASCII.GetBytes(Convert.ToHexString(signData));
 
         if (!await client.AuthorizeAsync(signature))
