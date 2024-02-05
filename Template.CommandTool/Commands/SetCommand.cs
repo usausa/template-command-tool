@@ -4,6 +4,8 @@ using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.CommandLine.IO;
 
+using Template.CommandTool.Usecase;
+
 public sealed class SetCommand : Command
 {
     public SetCommand()
@@ -16,18 +18,34 @@ public sealed class SetCommand : Command
     {
         private readonly IConsole console;
 
+        private readonly CommandUsecase commandUsecase;
+
         public int Value { get; set; }
 
-        public CommandHandler(IConsole console)
+        public CommandHandler(IConsole console, CommandUsecase commandUsecase)
         {
             this.console = console;
+            this.commandUsecase = commandUsecase;
         }
 
-        public override Task<int> InvokeAsync(InvocationContext context)
+        public override async Task<int> InvokeAsync(InvocationContext context)
         {
-            console.Out.WriteLine("TODO implement");
+            await using var client = await commandUsecase.CreateClientWithAuthorizeAsync(Host, Port, Key, Secret);
+            if (client is null)
+            {
+                console.Out.WriteLine("NG: Authorize failed.");
+                return -1;
+            }
 
-            return Task.FromResult(0);
+            if (!await client.SetAsync(Value))
+            {
+                console.Out.WriteLine("NG: Refresh failed.");
+                return -1;
+            }
+
+            console.Out.WriteLine("OK");
+
+            return 0;
         }
     }
 }
