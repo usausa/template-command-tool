@@ -14,9 +14,9 @@ rootCommand.Setup();
 
 var builder = new CommandLineBuilder(rootCommand)
     .UseDefaults()
-    .UseHost(host =>
+    .UseHost(static host =>
     {
-        host.ConfigureServices((_, service) =>
+        host.ConfigureServices(static (_, service) =>
         {
             service.AddSingleton<CommandClientFactory>();
             service.AddSingleton<CommandUsecase>();

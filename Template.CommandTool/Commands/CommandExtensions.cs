@@ -10,7 +10,7 @@ public static class CommandExtensions
     public static RootCommand Setup(this RootCommand command)
     {
         command.AddGlobalOption(new Option<string>(["--host", "-h"], "host") { IsRequired = true });
-        command.AddGlobalOption(new Option<int>(["--port", "-p"], () => 18888, "port"));
+        command.AddGlobalOption(new Option<int>(["--port", "-p"], static () => 18888, "port"));
         command.AddGlobalOption(new Option<string>(["--key", "-k"], "private key") { IsRequired = true });
         command.AddGlobalOption(new Option<string>(["--secret", "-s"], "secret") { IsRequired = true });
 
