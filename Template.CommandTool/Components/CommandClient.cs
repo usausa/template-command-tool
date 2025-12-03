@@ -66,7 +66,7 @@ public sealed class CommandClient : IAsyncDisposable
 
     public async ValueTask<bool> AuthorizeAsync(ReadOnlyMemory<byte> signature)
     {
-        // Exit
+        // Authorize
         context.Transport.Output.WriteAndAdvance("authorize "u8);
         context.Transport.Output.WriteAndAdvance(signature.Span);
         context.Transport.Output.WriteAndAdvance("\r\n"u8);
@@ -80,7 +80,7 @@ public sealed class CommandClient : IAsyncDisposable
 
     public async ValueTask<int?> GetAsync()
     {
-        // Exit
+        // Get
         context.Transport.Output.WriteAndAdvance("get\r\n"u8);
         await context.Transport.Output.FlushAsync().ConfigureAwait(false);
 
@@ -102,7 +102,7 @@ public sealed class CommandClient : IAsyncDisposable
 
     public async ValueTask<bool> SetAsync(int value)
     {
-        // Exit
+        // Set
         context.Transport.Output.WriteAndAdvance("set "u8);
         context.Transport.Output.WriteAndAdvance(value);
         context.Transport.Output.WriteAndAdvance("\r\n"u8);
