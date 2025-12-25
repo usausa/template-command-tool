@@ -1,28 +1,28 @@
-using System.CommandLine.Builder;
-using System.CommandLine;
-using System.CommandLine.Hosting;
-using System.CommandLine.Parsing;
-
 using Microsoft.Extensions.DependencyInjection;
+
+using Smart.CommandLine.Hosting;
 
 using Template.CommandTool.Commands;
 using Template.CommandTool.Components;
+using Template.CommandTool.Filters;
 using Template.CommandTool.Usecase;
 
-var rootCommand = new RootCommand("Command");
-rootCommand.Setup();
+var builder = CommandHost.CreateBuilder(args)
+    .UseDefaults();
 
-var builder = new CommandLineBuilder(rootCommand)
-    .UseDefaults()
-    .UseHost(static host =>
+builder.Services.AddSingleton<CommandClientFactory>();
+builder.Services.AddSingleton<CommandUsecase>();
+
+builder.ConfigureCommands(commands =>
+{
+    commands.ConfigureRootCommand(root =>
     {
-        host.ConfigureServices(static (_, service) =>
-        {
-            service.AddSingleton<CommandClientFactory>();
-            service.AddSingleton<CommandUsecase>();
-        });
-
-        host.UseCommandHandlers();
+        root.WithDescription("Template");
     });
 
-return await builder.Build().InvokeAsync(args);
+    commands.AddGlobalFilters();
+    commands.AddCommands();
+});
+
+var host = builder.Build();
+return await host.RunAsync();

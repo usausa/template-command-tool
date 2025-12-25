@@ -19,3 +19,10 @@ global using System.Security.Claims;
 global using System.Text;
 global using System.Threading;
 global using System.Threading.Tasks;
+
+global using Microsoft.Extensions.Logging;
+
+global using Smart;
+global using Smart.Collections.Generic;
+global using Smart.ComponentModel;
+global using Smart.Text;
