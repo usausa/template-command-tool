@@ -15,6 +15,11 @@ public sealed class CommandUsecase
 
     public async ValueTask<CommandClient?> CreateClientWithAuthorizeAsync(string host, int port, string key, string password)
     {
+        if (!File.Exists(key))
+        {
+            return null;
+        }
+
         var client = await clientFactory.CreateClientAsync(new IPEndPoint(IPAddress.Parse(host), port));
 
         var data = await client.ChallengeAsync();
@@ -25,7 +30,15 @@ public sealed class CommandUsecase
         }
 
         using var rsa = RSA.Create();
-        rsa.ImportFromEncryptedPem(await File.ReadAllTextAsync(key), password);
+        try
+        {
+            rsa.ImportFromEncryptedPem(await File.ReadAllTextAsync(key), password);
+        }
+        catch (CryptographicException)
+        {
+            await client.DisposeAsync();
+            return null;
+        }
 
         var token = Convert.FromHexString(Encoding.ASCII.GetString(data));
         var signData = rsa.SignData(token, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);

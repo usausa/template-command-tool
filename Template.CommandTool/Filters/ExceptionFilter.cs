@@ -6,9 +6,9 @@ using Smart.CommandLine.Hosting;
 
 public sealed class ExceptionFilter : ICommandFilter
 {
-    private readonly ILogger<LoggingFilter> log;
+    private readonly ILogger<ExceptionFilter> log;
 
-    public ExceptionFilter(ILogger<LoggingFilter> log)
+    public ExceptionFilter(ILogger<ExceptionFilter> log)
     {
         this.log = log;
     }

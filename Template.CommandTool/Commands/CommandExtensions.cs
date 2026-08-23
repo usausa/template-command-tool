@@ -11,5 +11,7 @@ public static class CommandExtensions
             data.AddSubCommand<DataGetCommand>();
             data.AddSubCommand<DataSetCommand>();
         });
+
+        commands.AddCommand<HashCommand>();
     }
 }
