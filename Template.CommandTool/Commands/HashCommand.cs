@@ -10,7 +10,7 @@ using Template.CommandTool.Components;
 public sealed class HashCommand : ICommandHandler
 {
     [Option<string>("--file", "-f", Description = "target file", Required = true)]
-    public required string FilePath { get; set; }
+    public string FilePath { get; set; } = default!;
 
     [Option<OutputFormat>("--output", "-o", Description = "output format", DefaultValue = OutputFormat.Text)]
     public OutputFormat Output { get; set; }

@@ -61,7 +61,7 @@ public sealed class CommandClient : IAsyncDisposable
             return [];
         }
 
-        return receiveBuffer.WrittenSpan[(index + 1)..].ToArray();
+        return [.. receiveBuffer.WrittenSpan[(index + 1)..]];
     }
 
     public async ValueTask<bool> AuthorizeAsync(ReadOnlyMemory<byte> signature)
