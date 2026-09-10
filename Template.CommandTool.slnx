@@ -12,5 +12,5 @@
     <File Path="README.md" />
     <File Path="Template.CommandTool.sln.DotSettings" />
   </Folder>
-  <Project Path="Template.CommandTool/Template.CommandTool.csproj" DefaultStartup="true" />
+  <Project Path="src/Template.CommandTool/Template.CommandTool.csproj" DefaultStartup="true" />
 </Solution>
