@@ -24,7 +24,7 @@ public sealed class CommandClientFactory : IDisposable
 #pragma warning disable CA2000
     public async ValueTask<CommandClient> CreateClientAsync(EndPoint endPoint)
     {
-        var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
+        var socket = new Socket(SocketType.Stream, ProtocolType.Tcp)
         {
             NoDelay = true
         };

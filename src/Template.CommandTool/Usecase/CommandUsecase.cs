@@ -20,7 +20,7 @@ public sealed class CommandUsecase
             return null;
         }
 
-        var client = await clientFactory.CreateClientAsync(new IPEndPoint(IPAddress.Parse(host), port));
+        var client = await clientFactory.CreateClientAsync(new DnsEndPoint(host, port));
 
         var data = await client.ChallengeAsync();
         if (data.Length == 0)
