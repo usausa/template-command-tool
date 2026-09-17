@@ -22,34 +22,38 @@ public sealed class CommandUsecase
 
         var client = await clientFactory.CreateClientAsync(new DnsEndPoint(host, port));
 
-        var data = await client.ChallengeAsync();
-        if (data.Length == 0)
-        {
-            await client.DisposeAsync();
-            return null;
-        }
-
-        using var rsa = RSA.Create();
+        var authorized = false;
         try
         {
-            rsa.ImportFromEncryptedPem(await File.ReadAllTextAsync(key), password);
+            var data = await client.ChallengeAsync();
+            if (data.Length == 0)
+            {
+                return null;
+            }
+
+            using var rsa = RSA.Create();
+            try
+            {
+                rsa.ImportFromEncryptedPem(await File.ReadAllTextAsync(key), password);
+            }
+            catch (CryptographicException)
+            {
+                return null;
+            }
+
+            var token = Convert.FromHexString(Encoding.ASCII.GetString(data));
+            var signData = rsa.SignData(token, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
+            var signature = Encoding.ASCII.GetBytes(Convert.ToHexString(signData));
+
+            authorized = await client.AuthorizeAsync(signature);
+            return authorized ? client : null;
         }
-        catch (CryptographicException)
+        finally
         {
-            await client.DisposeAsync();
-            return null;
+            if (!authorized)
+            {
+                await client.DisposeAsync();
+            }
         }
-
-        var token = Convert.FromHexString(Encoding.ASCII.GetString(data));
-        var signData = rsa.SignData(token, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
-        var signature = Encoding.ASCII.GetBytes(Convert.ToHexString(signData));
-
-        if (!await client.AuthorizeAsync(signature))
-        {
-            await client.DisposeAsync();
-            return null;
-        }
-
-        return client;
     }
 }
