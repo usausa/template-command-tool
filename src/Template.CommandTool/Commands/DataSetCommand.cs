@@ -22,10 +22,9 @@ public sealed class DataSetCommand : DataCommandBase, ICommandHandler
 
     public async ValueTask ExecuteAsync(CommandContext context)
     {
-        var connection = ResolveConnection();
-        if (connection is null)
+        if (!TryResolveConnection(out var connection, out var error))
         {
-            Console.WriteLine("NG: Connection parameter is missing.");
+            OutputWriter.WriteError(Output, error);
             context.ExitCode = -1;
             return;
         }
@@ -33,14 +32,14 @@ public sealed class DataSetCommand : DataCommandBase, ICommandHandler
         await using var client = await commandUsecase.CreateClientWithAuthorizeAsync(connection.Host, connection.Port, connection.Key, connection.Secret);
         if (client is null)
         {
-            Console.WriteLine("NG: Authorize failed.");
+            OutputWriter.WriteError(Output, "Authorize failed.");
             context.ExitCode = -1;
             return;
         }
 
         if (!await client.SetAsync(Value))
         {
-            Console.WriteLine("NG: Set failed.");
+            OutputWriter.WriteError(Output, "Set failed.");
             context.ExitCode = -1;
             return;
         }

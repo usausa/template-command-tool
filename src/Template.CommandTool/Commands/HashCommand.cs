@@ -19,7 +19,7 @@ public sealed class HashCommand : ICommandHandler
     {
         if (!File.Exists(FilePath))
         {
-            Console.WriteLine("NG: File not found.");
+            OutputWriter.WriteError(Output, "File not found.");
             context.ExitCode = -1;
             return;
         }
@@ -27,6 +27,6 @@ public sealed class HashCommand : ICommandHandler
         await using var stream = File.OpenRead(FilePath);
         var hash = await SHA256.HashDataAsync(stream);
 
-        OutputWriter.Write(Output, new { File = FilePath, Hash = Convert.ToHexString(hash) }, static x => $"OK {x.Hash}");
+        OutputWriter.Write(Output, new { Success = true, File = FilePath, Hash = Convert.ToHexString(hash) }, static x => $"OK {x.Hash}");
     }
 }

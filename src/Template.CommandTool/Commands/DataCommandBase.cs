@@ -10,6 +10,9 @@ public abstract class DataCommandBase
 {
     private readonly ConnectionSetting setting;
 
+    [Option<string>("--profile", "-c", Description = "connection profile (default: config)")]
+    public string? Profile { get; set; }
+
     [Option<string>("--host", "-h", Description = "host (default: config)")]
     public string? Host { get; set; }
 
@@ -30,17 +33,29 @@ public abstract class DataCommandBase
         this.setting = setting;
     }
 
-    protected ConnectionParameter? ResolveConnection()
+    // 優先順はオプション > プロファイル > 既定(Connection)
+    protected bool TryResolveConnection([NotNullWhen(true)] out ConnectionParameter? connection, [NotNullWhen(false)] out string? error)
     {
-        var host = Host ?? setting.Host;
-        var port = Port ?? setting.Port;
-        var key = Key ?? setting.Key;
-        var secret = Secret ?? setting.Secret;
-        if (String.IsNullOrEmpty(host) || (port is null or 0) || String.IsNullOrEmpty(key) || String.IsNullOrEmpty(secret))
+        connection = null;
+        ConnectionProfile? profile = null;
+        if (!String.IsNullOrEmpty(Profile) && !setting.Profiles.TryGetValue(Profile, out profile))
         {
-            return null;
+            error = $"Connection profile not found. profile=[{Profile}]";
+            return false;
         }
 
-        return new ConnectionParameter(host, port.Value, key, secret);
+        var host = Host ?? profile?.Host ?? setting.Host;
+        var port = Port ?? profile?.Port ?? setting.Port;
+        var key = Key ?? profile?.Key ?? setting.Key;
+        var secret = Secret ?? profile?.Secret ?? setting.Secret;
+        if (String.IsNullOrEmpty(host) || (port is null or 0) || String.IsNullOrEmpty(key) || String.IsNullOrEmpty(secret))
+        {
+            error = "Connection parameter is missing.";
+            return false;
+        }
+
+        connection = new ConnectionParameter(host, port.Value, key, secret);
+        error = null;
+        return true;
     }
 }
