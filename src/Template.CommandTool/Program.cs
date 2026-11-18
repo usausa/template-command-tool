@@ -1,3 +1,5 @@
+using System.CommandLine.Help;
+
 using BunnyTail.DependencyInjection;
 
 using Microsoft.Extensions.Configuration;
@@ -31,6 +33,12 @@ builder.ConfigureCommands(commands =>
     commands.ConfigureRootCommand(root =>
     {
         root.WithDescription("Template");
+        root.Configure(static command =>
+        {
+            var help = command.Options.OfType<HelpOption>().First();
+            help.Aliases.Remove("-h");
+            help.Aliases.Remove("/h");
+        });
     });
 
     commands.AddGlobalFilters();

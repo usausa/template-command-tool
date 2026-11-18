@@ -11,7 +11,7 @@ public sealed class DataSetCommand : DataCommandBase, ICommandHandler
 {
     private readonly CommandUsecase commandUsecase;
 
-    [Option("--value", "-v", "value", Required = true)]
+    [Option<int>("--value", "-v", Description = "value", Required = true)]
     public int Value { get; set; }
 
     public DataSetCommand(CommandUsecase commandUsecase, ConnectionSetting setting)
