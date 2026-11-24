@@ -8,11 +8,11 @@
 
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="BunnyTail.DependencyInjection" Version="1.0.0" />
+    <PackageReference Include="BunnyTail.DependencyInjection" Version="2.0.0" />
     <PackageReference Include="System.CommandLine" Version="3.0.0" />
     <PackageReference Include="Usa.Smart.CommandLine.Hosting" Version="3.1.0" />
-    <PackageReference Include="Usa.Smart.Core" Version="3.0.0" />
-    <PackageReference Include="Usa.Smart.Mapper" Version="1.0.0" />
+    <PackageReference Include="Usa.Smart.Core" Version="3.2.0" />
+    <PackageReference Include="Usa.Smart.Mapper" Version="1.1.0" />
   </ItemGroup>
 
   <ItemGroup>
